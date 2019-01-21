@@ -1,6 +1,6 @@
 package com.gajos.ftp;
 
-public class FTPException extends Exception {
+public class FTPException extends RuntimeException {
 
 	/**
 	 * 

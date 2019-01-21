@@ -4,10 +4,8 @@ import java.io.InputStream;
 
 public interface DataTokenizer {
 	public Object get();
-	
-	public void next() throws FTPException;
-	
-	public  void next(int maxCharNumber, FTPMessageType type) throws FTPException;
+		
+	public  void next(FTPMessageType type) throws FTPException;
 	
 	public boolean isEndReached();
 	
@@ -18,4 +16,8 @@ public interface DataTokenizer {
 	public void close() throws FTPException;
 	
 	public void connect() throws FTPException;
+	
+	public void clean() throws FTPException;
+	
+	public void setTimeout(int time);
 }

@@ -42,6 +42,7 @@ public class FTPProject implements Serializable{
 	public FTPProject()
 	{
 		versionUID = serialVersionUID;
+		filePath = "";
 	}
 	
 	/**
@@ -73,9 +74,7 @@ public class FTPProject implements Serializable{
             this.clientsList = new ArrayList<>(temp.clientsList);
             this.filePath = path;
             			
-        } 
-          
-        catch(IOException ex) 
+        }catch(IOException ex) 
         { 
         	throw new FTPException(FTPStatus.ERROR, lc.getLanguage().deserializationError());
         }
@@ -121,6 +120,10 @@ public class FTPProject implements Serializable{
 		this.clientsList.add(client);
 	}
 	
+	public void removeServerEndpoint(FTPClient client)
+	{
+		this.clientsList.remove(client);
+	}
 	public void setFilePath(String path)
 	{
 		this.filePath = path;
@@ -129,5 +132,20 @@ public class FTPProject implements Serializable{
 	public String getFilePath()
 	{
 		return this.filePath;
+	}
+	
+	public List<FTPClient> getClients()
+	{
+		return this.clientsList;
+	}
+	
+	public FTPClient getClientByHostname(String hostname)
+	{
+		return clientsList.stream()
+				.filter((FTPClient s) -> {
+					return hostname.equals(s.getHostname());
+				})
+				.findFirst()
+				.get();
 	}
 }

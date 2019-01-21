@@ -19,7 +19,7 @@ public class LanguageController {
 	 *
 	 */
 	
-	interface Language
+	public interface Language
 	{
 		public String serializationError();
 		public String deserializationError();
@@ -51,6 +51,32 @@ public class LanguageController {
 		public String messageTooLong();
 		public String cannotCreateFile();
 		public String notIPAddress();
+		public String tokenTooLong();
+		public String notPortNumber();
+		public String notConnected();
+		public String hostname();
+		public String serverAddress();
+		public String serverPort();
+		public String add();
+		public String clear();
+		public String addServer();
+		public String error();
+		public String warning();
+		public String ok();
+		public String projectPath();
+		public String notNumber();
+		public String size();
+		public String chooseServerFirst();
+		public String connect();
+		public String change();
+		public String filePath();
+		public String connectError();
+		public String cancel();
+		public String downloadFile();
+		public String uploadFile();
+		public String username();
+		public String password();
+		
 	}
 	/**
 	 * Polish
@@ -207,7 +233,130 @@ public class LanguageController {
 		
 		public String notIPAddress()
 		{
-			return new String("Nie rozpoznano adresu IP lub portu");
+			return new String("Nie rozpoznano adresu IP.");
+		}
+		
+		public String tokenTooLong()
+		{
+			return new String("Zbyt d³ugi token dla danego typu.");
+		}
+		
+		public String notPortNumber()
+		{
+			return new String("Nie rozpoznano numeru portu.");
+		}
+		
+		public String notConnected()
+		{
+			return new String("Nie po³¹czono.");
+		}
+		
+		public String hostname()
+		{
+			return new String("nazwa hosta");
+		}
+		
+		public String serverAddress()
+		{
+			return new String("adres");
+		}
+		
+		public String serverPort()
+		{
+			return new String("port");
+		}
+		
+		public String add()
+		{
+			return new String("dodaj");			
+		}
+		
+		public String change()
+		{
+			return new String("zmieñ");			
+		}
+		
+		public String clear()
+		{
+			return new String("wyczyœæ");			
+		}
+		
+		public String addServer()
+		{
+			return new String("Dodaj server");			
+		}
+		
+		public String error()
+		{
+			return new String("[B£¥D]");			
+		}
+		
+		public String warning()
+		{
+			return new String("[OSTRZE¯ENIE]");			
+		}
+		
+		public String ok()
+		{
+			return new String("[OK]");				
+		}
+		
+		public String projectPath()
+		{
+			return new String("Œcie¿ka projektu: ");
+		}
+		
+		public String notNumber()
+		{
+			return new String("To nie jest numer!");
+		}
+		
+		public String size()
+		{
+			return new String("Rozmiar: ");
+		}
+		
+		public String chooseServerFirst()
+		{
+			return new String("Wybierz server.");			
+		}
+		
+		public String connect()
+		{
+			return new String("Po³¹cz z serverem");			
+		}
+		
+		public String filePath()
+		{
+			return new String("Œcie¿ka pliku: ");			
+		}
+		
+		public String connectError()
+		{
+			return new String("Nie mo¿na polaczyæ.");			
+		}
+		
+		public String cancel()
+		{
+			return new String("Anuluj");			
+		}
+		
+		public String downloadFile() {
+			return new String("Œci¹gnij");						
+		}
+		
+		public String uploadFile() {
+			return new String("Wyœlij");			
+		}
+		
+		public String username()
+		{
+			return new String("Login");						
+		}
+		
+		public String password()
+		{
+			return new String("Has³o");						
 		}
 	}
 	
@@ -336,12 +485,12 @@ public class LanguageController {
 		
 		public String notCodeType()
 		{
-			return new String("Element is not a code.");
+			return new String("Token is not a code.");
 		}
 		
 		public String notFilePath()
 		{
-			return new String("Element nie jest œcie¿k¹.");
+			return new String("Token is not a path.");
 		}
 		
 		public String invalidType()
@@ -366,7 +515,130 @@ public class LanguageController {
 		
 		public String notIPAddress()
 		{
-			return new String("Not recognized IP address or port.");
+			return new String("Not recognized IP address.");
+		}
+		
+		public String tokenTooLong()
+		{
+			return new String("Token too long for this type.");
+		}
+		
+		public String notPortNumber()
+		{
+			return new String("Not recognized port number.");
+		}
+		
+		public String notConnected()
+		{
+			return new String("Not connected.");
+		}
+		
+		public String hostname()
+		{
+			return new String("hostname");
+		}
+		
+		public String serverAddress()
+		{
+			return new String("address");
+		}
+		
+		public String serverPort()
+		{
+			return new String("port");
+		}
+		
+		public String add()
+		{
+			return new String("add");			
+		}
+		
+		public String change()
+		{
+			return new String("change");			
+		}
+		
+		public String clear()
+		{
+			return new String("clear");			
+		}
+		
+		public String addServer()
+		{
+			return new String("Add server");			
+		}
+		
+		public String error()
+		{
+			return new String("[ERROR]");			
+		}
+		
+		public String warning()
+		{
+			return new String("[WARNING]");			
+		}
+		
+		public String ok()
+		{
+			return new String("[OK]");				
+		}
+		
+		public String projectPath()
+		{
+			return new String("Project path: ");
+		}
+		
+		public String notNumber()
+		{
+			return new String("Not a number!");
+		}
+		
+		public String size()
+		{
+			return new String("Size: ");
+		}
+		
+		public String chooseServerFirst()
+		{
+			return new String("Choose the server first.");			
+		}
+		
+		public String connect()
+		{
+			return new String("Connect with a server");			
+		}
+		
+		public String filePath()
+		{
+			return new String("File path: ");			
+		}
+		
+		public String connectError()
+		{
+			return new String("Cannot connect.");			
+		}
+		
+		public String cancel()
+		{
+			return new String("Cancel");			
+		}
+		
+		public String downloadFile() {
+			return new String("Download");						
+		}
+		
+		public String uploadFile() {
+			return new String("Upload");			
+		}
+		
+		public String username()
+		{
+			return new String("Login");						
+		}
+		
+		public String password()
+		{
+			return new String("Password");						
 		}
 	}
 	

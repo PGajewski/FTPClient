@@ -7,13 +7,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class CharTokenizer implements DataTokenizer {
-	
-	public final static int BUFFER_SIZE = 255;
-	
+		
+	public final static int BUFFER_SIZE = 4096;
+		
 	/**
 	 * Language controller.
 	 */
@@ -53,34 +55,51 @@ public class CharTokenizer implements DataTokenizer {
 	 * Boolean inform about end of transmission.
 	 */
 	private boolean isEnd;
-	
-	private int charCounter;
-	
+		
 	public CharTokenizer(InetAddress ipAddress, int port)
 	{
+		this.charBuffer = new Character('\0');
 		this.ipAddress = ipAddress;
 		this.port = port;
 	}
-	
+		
 	public void connect() throws FTPException
 	{
 		try {
 			socket = new Socket(ipAddress, port);
-		    reader = new BufferedReader( new InputStreamReader( this.socket.getInputStream() ) );
+			socket.setReceiveBufferSize(BUFFER_SIZE);
+			socket.setTcpNoDelay(true);
+		    reader = new BufferedReader( new InputStreamReader( this.socket.getInputStream()), BUFFER_SIZE );
 		    writer = new BufferedWriter( new OutputStreamWriter( this.socket.getOutputStream() ) );
-		    charCounter = 0;
+		} catch (ConnectException e)
+		{
+			close();
+			throw new FTPException(FTPStatus.ERROR, lc.getLanguage().connectError());
 		} catch (IOException e) {
-			e.printStackTrace();
-			throw new FTPException(FTPStatus.ERROR, lc.getLanguage().portInUse());
-		}
+			close();
+			throw new FTPException(FTPStatus.ERROR, lc.getLanguage().connectError());
+		} 
 	}
 	
 	public void close() throws FTPException
 	{
 		try {
-			writer.close();
-			reader.close();
-			socket.close();
+			if(writer != null)
+			{
+				writer.flush();
+				writer.close();
+				writer = null;
+			}
+			if(reader != null)
+			{
+				reader.close();
+				reader = null;
+			}
+			if(socket != null)
+			{
+				socket.close();
+				socket = null;
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new FTPException(FTPStatus.ERROR, lc.getLanguage().disconnectError());
@@ -92,37 +111,22 @@ public class CharTokenizer implements DataTokenizer {
 		return this.isEnd;
 	}
 	
-	public synchronized void next(int maxCharNumber, FTPMessageType type) throws FTPException
-	{
-		//Ignore parameters.
-		this.next();
-	}
-	
-	public synchronized void next() throws FTPException
+	public synchronized void next(FTPMessageType type) throws FTPException
 	{
 		int buffer;
 		try {
 			buffer = reader.read();
 			if (buffer == -1)
 			{
-				synchronized(charBuffer)
-				{
-					charBuffer = null;
-					isEnd = true;
-					charCounter = 0;
-				}
+
+				isEnd = true;
 			}
 			else
 			{
 				//Check is too many chars in package.
-				if(charCounter >= BUFFER_SIZE)
-				{
-					this.close();
-					return;
-				}
+
 				charBuffer = (char)buffer;
 				isEnd = false;
-				++charCounter;
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -130,20 +134,34 @@ public class CharTokenizer implements DataTokenizer {
 		}
 	}
 	
+	public void clean()
+	{
+		//Start new reader and writer.
+		try {
+			//Catch all from socket.
+			for(int i = 0; i < BUFFER_SIZE; ++i)
+			{
+				if(reader.read() == 10)
+				{
+					return;
+				}
+			}
+			close();
+		} catch (IOException e ) {
+
+		} 
+	}
+	
 	public Object get()
 	{
-		synchronized(charBuffer)
-		{
-			return this.charBuffer;
-		}
+		return this.charBuffer;
 	}
 	
 	public synchronized void send(String message) throws FTPException
 	{
 		try {
-			synchronized(writer) {
-			writer.write(message);
-			writer.flush();}
+			writer.write(message + "\r\n");
+			writer.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new FTPException(FTPStatus.ERROR, lc.getLanguage().sendingError());
@@ -155,7 +173,7 @@ public class CharTokenizer implements DataTokenizer {
 		try {
 			synchronized(writer) {
 				BufferedOutputStream output = new BufferedOutputStream(socket.getOutputStream());
-				byte[] buffer = new byte[4096];
+				byte[] buffer = new byte[BUFFER_SIZE];
 				int bytesRead = 0;
 				while ((bytesRead = stream.read(buffer)) != -1) {
 					output.write(buffer, 0, bytesRead);
@@ -166,6 +184,18 @@ public class CharTokenizer implements DataTokenizer {
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new FTPException(FTPStatus.ERROR, lc.getLanguage().sendingError());
+		}
+	}
+
+	@Override
+	public void setTimeout(int time) {
+		try {
+			if(socket != null)
+			{
+				socket.setSoTimeout(time);
+			}
+		} catch (SocketException e) {
+			e.printStackTrace();
 		}
 	}
 }
